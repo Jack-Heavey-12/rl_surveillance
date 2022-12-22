@@ -9,7 +9,7 @@ from sklearn.ensemble import ExtraTreesRegressor
 
 
 class EpidemicEnv(object):
-	def __init__(self, graph, budget_c = 5, initial_i = 0.1, infect_prob=0.5, cure_prob=0.05, iso_length = 10, tau = 1):
+	def __init__(self, graph, budget_c = 5, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1):
 		self.graph = graph
 		self.n = len(graph)
 		self.budget = budget_c
