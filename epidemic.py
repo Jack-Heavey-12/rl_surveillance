@@ -28,7 +28,7 @@ class EpidemicEnv(object):
 		self.belief_state = self.Initial_I * np.ones(self.n)
 		#time steps
 		self.T = 100
-		#Not sure what this variable does?
+		#Not sure what this variable does? I think it's for the curriculum learning?
 		self.Temperature = 1
 		self.belief_regressor=ExtraTreesRegressor()
 		#dictionary of infected individuals at a given time - each dictionary value should be a set.
@@ -40,8 +40,21 @@ class EpidemicEnv(object):
 		self.iso_time = {}
 		self.inv_iso = np.ones(self.n)
 
+	#For resetting the environment for multiple trials
+	def reset(self):
+		self.all_nodes = list(range(self.n))
+		self.true_state = np.zeros(self.n)
+		self.true_state[random.sample(self.all_nodes, int(self.n*self.Initial_I))] = 1
+		self.belief_state = self.Initial_I * np.ones(self.n)
+		self.A = nx.to_numpy_matrix(self.graph)
 
-	### Need to figure out how to do this - not immediately obvious.
+		self.inf_t = {}
+		self.iso = set()
+		self.iso_time = {}
+		self.inv_iso = np.ones(self.n)
+
+		
+
 	def perform(self, iso_list, t, final_iteration = False):
 		S_true = self.true_state.copy()
 		S_belief = self.belief_state.copy()
@@ -96,8 +109,31 @@ class EpidemicEnv(object):
 		for i in next_infect_list:
 			self.true_state[i] = 1
 
-		return total_reward
+		return self.true_state, self.belief_state, total_reward, min(total_reward, np.sum(np.array(self.true_state) * -1))
+
+
+	def belief_transition(self, previous_action, previous_belief):
+		previous_belief[self.observationIS]=1
+		belief_state = np.array(previous_belief)
+		previous_belief[self.observationII]=self.Temperature*1+(1-self.Temperature)*previous_belief[self.observationII]
+		previous_belief[self.observationSI]=(1-self.Temperature)*previous_belief[self.observationSI]
+		previous_belief[self.observationSS]=(1-self.Temperature)*previous_belief[self.observationSS]
+
+			
+		previous_belief[previous_action]=0
 		
+		indegree_prob=np.ones(self.n)-self.infect_prob*previous_belief
+		Prob=[np.prod([indegree_prob[u] for u in self.A[:,v].nonzero()[0]]) for v in self.all_nodes]
+
+		belief_state=previous_belief+(np.ones(self.n)-previous_belief)*(np.ones(self.n)-Prob) # we know all the reported already thus no (1-c)
+		
+		belief_state[self.observationIS]=0
+
+		belief_state[self.observationII]=self.Temperature*1+(1-self.Temperature)*belief_state[self.observationII]
+		belief_state[self.observationSI]=self.Temperature*1+(1-self.Temperature)*belief_state[self.observationSI]
+		belief_state[self.observationSS]=(1-self.Temperature)*belief_state[self.observationSS]
+
+		return belief_state
 
 
 	def is_action_legal(self, iso_list):
