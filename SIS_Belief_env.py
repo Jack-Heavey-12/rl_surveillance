@@ -81,8 +81,11 @@ class EpidemicEnv(object):
         
         indegree_prob=np.ones(self.n)-self.infect_prob*previous_belief
         Prob=[np.prod([indegree_prob[u] for u in self.A[:,v].nonzero()[0]]) for v in self.all_nodes]
+
         belief_state=previous_belief+(np.ones(self.n)-previous_belief)*(np.ones(self.n)-Prob) # we know all the reported already thus no (1-c)
+        
         belief_state[self.observationIS]=0
+
         belief_state[self.observationII]=self.Temperature*1+(1-self.Temperature)*belief_state[self.observationII]
         belief_state[self.observationSI]=self.Temperature*1+(1-self.Temperature)*belief_state[self.observationSI]
         belief_state[self.observationSS]=(1-self.Temperature)*belief_state[self.observationSS]

@@ -109,6 +109,11 @@ class EpidemicEnv(object):
 		for i in next_infect_list:
 			self.true_state[i] = 1
 
+		next_belief_state = self.belief_transition(iso_list, self.belief_state)
+		self.belief_state = next_belief_state
+
+
+
 		return self.true_state, self.belief_state, total_reward, min(total_reward, np.sum(np.array(self.true_state) * -1))
 
 
