@@ -143,7 +143,7 @@ class EpidemicEnv(object):
 	
 
 		#Updates the probability of an individual being infected while they are in isolation. That belief should decrease as isolation continues
-		for i in list(iso_time.keys()):
+		for i in list(self.iso_time.keys()):
 			belief_state[i] = (1 - self.cure_prob) ** (self.iso_length - self.iso_time[i])
 
 		belief_state[known_infections] = 1
