@@ -33,6 +33,8 @@ class EpidemicEnv(object):
 		self.belief_regressor=ExtraTreesRegressor()
 		#dictionary of infected individuals at a given time - each dictionary value should be a set.
 		self.inf_t = {}
+		#running list of infected individuals based on the test
+		self.infections = []
 		#self.inf_t[0] = set()
 		#For isolation, we will have a set of people currently in isolation, a dict for how much time in isolation left,
 		# and a list for calculating spreading infections - ones if they are not in isolation and zeroes if they are
@@ -91,12 +93,21 @@ class EpidemicEnv(object):
 				self.inv_iso[i] = 1
 
 		# Setting up the individuals that go into isolation at a given step.
+
+		detected_infections = []
+		detected_negatives = []
 		for i in iso_list:
 			if self.true_state[i] == 1:
+				detected_infections.append(i)
 				if i not in self.iso:
 					self.iso.add(i)
 					self.iso_time[i] = self.iso_length
+			else:
+				detected_negatives.append(i)
 
+		#used in the belief_transition update
+		self.infections = detected_infections
+		self.negatives = detected_negatives
 		# Moving the infection state one step forward.
 		next_cure_list = [v for v in self.all_nodes if self.true_state[v] == 1 and random.uniform(0,1) < self.cure_prob]
 
@@ -109,7 +120,7 @@ class EpidemicEnv(object):
 		for i in next_infect_list:
 			self.true_state[i] = 1
 
-		next_belief_state = self.belief_transition(iso_list, self.belief_state)
+		next_belief_state = self.belief_transition(detected_infections, detected_negatives, self.belief_state)
 		self.belief_state = next_belief_state
 
 
@@ -117,26 +128,26 @@ class EpidemicEnv(object):
 		return self.true_state, self.belief_state, total_reward, min(total_reward, np.sum(np.array(self.true_state) * -1))
 
 
-	def belief_transition(self, previous_action, previous_belief):
-		previous_belief[self.observationIS]=1
+	def belief_transition(self, known_infections, known_negatives, previous_belief):
+		
+		previous_belief[known_infections] = 1
+		previous_belief[known_negatives] = 0
+
 		belief_state = np.array(previous_belief)
-		previous_belief[self.observationII]=self.Temperature*1+(1-self.Temperature)*previous_belief[self.observationII]
-		previous_belief[self.observationSI]=(1-self.Temperature)*previous_belief[self.observationSI]
-		previous_belief[self.observationSS]=(1-self.Temperature)*previous_belief[self.observationSS]
-
-			
-		previous_belief[previous_action]=0
 		
-		indegree_prob=np.ones(self.n)-self.infect_prob*previous_belief
-		Prob=[np.prod([indegree_prob[u] for u in self.A[:,v].nonzero()[0]]) for v in self.all_nodes]
+		indegree_prob = np.ones(self.n) - self.infect_prob * previous_belief
+		#added the additional requirement that an individual isn't in isoluation. Think this is done correctly
+		Prob = [np.prod([indegree_prob[u] for u in self.A[:,v].nonzero()[0] if self.inv_iso[u] == 1]) for v in self.all_nodes]
 
-		belief_state=previous_belief+(np.ones(self.n)-previous_belief)*(np.ones(self.n)-Prob) # we know all the reported already thus no (1-c)
-		
-		belief_state[self.observationIS]=0
+		belief_state = previous_belief + (np.ones(self.n) - previous_belief) * (np.ones(self.n) - Prob) # we know all the reported already thus no (1-c)
+	
 
-		belief_state[self.observationII]=self.Temperature*1+(1-self.Temperature)*belief_state[self.observationII]
-		belief_state[self.observationSI]=self.Temperature*1+(1-self.Temperature)*belief_state[self.observationSI]
-		belief_state[self.observationSS]=(1-self.Temperature)*belief_state[self.observationSS]
+		#Updates the probability of an individual being infected while they are in isolation. That belief should decrease as isolation continues
+		for i in list(iso_time.keys()):
+			belief_state[i] = (1 - self.cure_prob) ** (self.iso_length - self.iso_time[i])
+
+		belief_state[known_infections] = 1
+		belief_state[known_negatives] = 0
 
 		return belief_state
 
