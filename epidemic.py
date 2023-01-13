@@ -137,7 +137,7 @@ class EpidemicEnv(object):
 		
 		indegree_prob = np.ones(self.n) - self.infect_prob * previous_belief
 		#added the additional requirement that an individual isn't in isoluation. Think this is done correctly
-		Prob = [np.prod([indegree_prob[u] for u in self.A[:,v].nonzero()[0] if self.inv_iso[u] == 1]) for v in self.all_nodes]
+		Prob = np.array([np.prod([(1 - indegree_prob[u]) for u in self.A[:,v].nonzero()[0] if self.inv_iso[u] == 1]) for v in self.all_nodes])
 
 		belief_state = previous_belief + (np.ones(self.n) - previous_belief) * (np.ones(self.n) - Prob) # we know all the reported already thus no (1-c)
 	
