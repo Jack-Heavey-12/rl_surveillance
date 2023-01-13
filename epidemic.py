@@ -151,7 +151,6 @@ class EpidemicEnv(object):
 
 		return belief_state
 
-
 	def is_action_legal(self, iso_list):
 		if(len(list(iso_list)) <= self.budget):
 			return True
