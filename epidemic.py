@@ -9,7 +9,7 @@ from sklearn.ensemble import ExtraTreesRegressor
 
 
 class EpidemicEnv(object):
-	def __init__(self, graph, budget_c = 5, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1):
+	def __init__(self, graph, budget_c = 50, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1):
 		self.graph = graph
 		self.n = len(graph)
 		self.budget = budget_c
@@ -161,7 +161,7 @@ class EpidemicEnv(object):
 if __name__ == '__main__':
 	print('Here goes nothing')
 	Graph_List = ['test_graph','Hospital','India','Exhibition','Flu','irvine','Escorts','Epinions']
-	Graph_index = 0
+	Graph_index = 1
 	Graph_name = Graph_List[Graph_index]
 	path = 'graph_data/' + Graph_name + '.txt'
 	G = nx.read_edgelist(path, nodetype=int)
@@ -178,10 +178,10 @@ if __name__ == '__main__':
 		action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
 		reward = env.perform(action, i, final_iteration=False)
 		#true_I.append(sum(S1))
-		Reward.append(reward)
+		Reward.append(reward[2])
 	action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
 	reward = env.perform(action, i, final_iteration=True)
-	Reward.append(reward)
+	Reward.append(reward[2])
 	plt.plot(range(len(true_I)),true_I)
 	# plt.plot(range(len(belief_I)),belief_I)
 	print(sum(Reward))
