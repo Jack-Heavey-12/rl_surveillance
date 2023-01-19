@@ -307,11 +307,11 @@ if __name__ == '__main__':
 	
 	discount=1
 	First_time=True
-	graph_index=0
+	graph_index=1
 	g, graph_name=get_graph(graph_index)
 	if First_time:
 		model=DQN(graph=g)
-		cumulative_reward_list,true_cumulative_reward_list=model.fit_GCN(num_iterations=10, num_epochs=30)
+		cumulative_reward_list,true_cumulative_reward_list=model.fit_GCN(num_iterations=300, num_epochs=30)
 		with open('Graph={}.pickle'.format(graph_name), 'wb') as f:
 			pickle.dump([model,true_cumulative_reward_list], f)
 	else:
@@ -320,7 +320,7 @@ if __name__ == '__main__':
 		model=X[0]
 		true_cumulative_reward_list=X[1]
 	cumulative_rewards = []
-	for i in range(10):
+	for i in range(300):
 		model.simulator.Temperature=0
 		S, A, R, cumulative_reward = model.run_episode_GCN(eps=0, discount=discount)
 		cumulative_rewards.append(cumulative_reward)
