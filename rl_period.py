@@ -208,7 +208,7 @@ class DQN(FQI):
 			#print(f'Loss shape: {loss.shape}')
 			loss_list.append(loss)
 		total_loss = sum(loss_list)
-		print(f'total_loss shape: {total_loss.shape}')
+		#print(f'total_loss shape: {total_loss.shape}')
 		return total_loss
 
 	def fit_GCN(self, num_iterations=100, num_epochs=100, eps=0.1, discount=0.9):
