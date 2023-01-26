@@ -202,10 +202,14 @@ class DQN(FQI):
 			next_action = self.greedy_action_GCN(next_state)
 			prediction = self.Q_GCN(state, action, netid=netid)
 			target = reward + discount * self.Q_GCN(next_state, next_action, netid= netid)
-			loss = self.loss_fn(prediction, target)
+			#print(f'Tensors: {prediction}, {target}')
+			loss = (prediction - target) ** 2 #self.loss_fn(prediction, target)
+			#print(f' Loss tensor: {loss}')
+			#print(f'Loss shape: {loss.shape}')
 			loss_list.append(loss)
 		total_loss = sum(loss_list)
-		return loss
+		print(f'total_loss shape: {total_loss.shape}')
+		return total_loss
 
 	def fit_GCN(self, num_iterations=100, num_epochs=100, eps=0.1, discount=0.9):
 		print('Beginning fit_GFN()')
@@ -300,7 +304,7 @@ class DQN(FQI):
 
 def get_graph(graph_index):
 	print('Reading Graph')
-	graph_list = ['test_graph','Hospital','India','Exhibition','Flu','irvine','Escorts','Epinions']
+	graph_list = ['test_graph','arxiv_collab_network', 'Hospital','India','Exhibition','Flu','irvine','Escorts','Epinions']
 	graph_name = graph_list[graph_index]
 	path = 'graph_data/' + graph_name + '.txt'
 	G = nx.read_edgelist(path, nodetype=int)
@@ -315,7 +319,7 @@ if __name__ == '__main__':
 	
 	discount=1
 	First_time=True
-	graph_index=1
+	graph_index=2
 	g, graph_name=get_graph(graph_index)
 	print(f'First Time value: {First_time}')
 	if First_time:

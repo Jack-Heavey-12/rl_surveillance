@@ -9,10 +9,11 @@ from sklearn.ensemble import ExtraTreesRegressor
 
 
 class EpidemicEnv(object):
-	def __init__(self, graph, budget_c = 50, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1):
+	def __init__(self, graph, budget_c = 50, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1, intermediate_sample = .1):
 		self.graph = graph
 		self.n = len(graph)
 		self.budget = budget_c
+		self.sample = int(intermediate_sample * budget_c)
 		self.Initial_I = initial_i #random.sample(list(range(self.n)), int(self.n * initial_i))
 		self.infect_prob = infect_prob
 		self.cure_prob = cure_prob
@@ -70,8 +71,10 @@ class EpidemicEnv(object):
 
 			#Can do some curriculum learning here.
 			if not final_iteration:
-				hidden_reward = -np.sum(self.true_state)
-				visible_reward = 0
+				hidden_reward = -sum(self.true_state)
+				lst = self.all_nodes.copy()
+				rand_sample = random.sample(lst, self.sample)
+				visible_reward = sum([self.true_state[v] for v in rand_sample]) * -1
 
 				total_reward = self.tau * visible_reward + (1 - self.tau) * hidden_reward
 			else:

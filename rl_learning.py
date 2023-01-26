@@ -202,6 +202,7 @@ class DQN(FQI):
 			next_action = self.greedy_action_GCN(next_state)
 			prediction = self.Q_GCN(state, action, netid=netid)
 			target = reward + discount * self.Q_GCN(next_state, next_action, netid= netid)
+			print(f'Shapes: {prediction.shape()}, {target.shape}')
 			loss = self.loss_fn(prediction, target)
 			loss_list.append(loss)
 		total_loss = sum(loss_list)
