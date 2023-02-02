@@ -9,11 +9,14 @@ from sklearn.ensemble import ExtraTreesRegressor
 
 
 class EpidemicEnv(object):
-	def __init__(self, graph, budget_c = 50, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1, intermediate_sample = .1):
+	def __init__(self, graph, budget_c = None, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1, intermediate_sample = .1):
 		self.graph = graph
 		self.n = len(graph)
-		self.budget = budget_c
-		self.sample = int(intermediate_sample * budget_c)
+		if not budget_c:
+			self.budget = int(self.n / 10)
+		else:
+			self.budget = budget_c
+		self.sample = int(intermediate_sample * self.budget)
 		self.Initial_I = initial_i #random.sample(list(range(self.n)), int(self.n * initial_i))
 		self.infect_prob = infect_prob
 		self.cure_prob = cure_prob
@@ -170,7 +173,7 @@ if __name__ == '__main__':
 	G = nx.read_edgelist(path, nodetype=int)
 	mapping = dict(zip(G.nodes(),range(len(G))))
 	g = nx.relabel_nodes(G,mapping)
-	env = EpidemicEnv(graph=g, budget_c = 5)
+	env = EpidemicEnv(graph=g)
 	
 	#env.reset()
 	true_I = []
