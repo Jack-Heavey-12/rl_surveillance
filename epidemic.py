@@ -9,10 +9,15 @@ from sklearn.ensemble import ExtraTreesRegressor
 
 
 class EpidemicEnv(object):
-	def __init__(self, graph, budget_c = 50, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1):
+	def __init__(self, graph, budget_c = None, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1, intermediate_sample = .1):
 		self.graph = graph
 		self.n = len(graph)
-		self.budget = budget_c
+		if not budget_c:
+			self.budget = int(self.n / 10)
+		else:
+			self.budget = budget_c
+
+		self.sample = int(intermediate_sample * self.budget)
 		self.Initial_I = initial_i #random.sample(list(range(self.n)), int(self.n * initial_i))
 		self.infect_prob = infect_prob
 		self.cure_prob = cure_prob
@@ -70,7 +75,10 @@ class EpidemicEnv(object):
 		#Can do some curriculum learning here.
 		if not final_iteration:
 			hidden_reward = -np.sum(self.true_state)
-			visible_reward = 0
+			#visible_reward = 0
+			lst = self.all_nodes.copy()
+			rand_sample = random.sample(lst, self.sample)
+			visible_reward = sum([self.true_state[v] for v in rand_sample]) * -1
 
 			total_reward = self.tau * visible_reward + (1 - self.tau) * hidden_reward
 		else:
@@ -160,27 +168,31 @@ class EpidemicEnv(object):
 if __name__ == '__main__':
 	print('Here goes nothing')
 	Graph_List = ['test_graph','Hospital','India','Exhibition','Flu','irvine','Escorts','Epinions']
-	Graph_index = 1
+	Graph_index = 2
 	Graph_name = Graph_List[Graph_index]
 	path = 'graph_data/' + Graph_name + '.txt'
 	G = nx.read_edgelist(path, nodetype=int)
 	mapping = dict(zip(G.nodes(),range(len(G))))
 	g = nx.relabel_nodes(G,mapping)
-	env = EpidemicEnv(graph=g, budget_c = 5)
+	env = EpidemicEnv(graph=g)
 	
-	#env.reset()
-	true_I = []
-	belief_I = []
-	Reward = []
-	for i in range(100):
-		
+	total_rew = []
+	for _ in range(50):
+		env.reset()
+		true_I = []
+		belief_I = []
+		#Reward = []
+		for i in range(100):
+			
+			action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
+			reward = env.perform(action, i, final_iteration=False)
+			#true_I.append(sum(S1))
+			Reward.append(reward[2])
 		action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
-		reward = env.perform(action, i, final_iteration=False)
-		#true_I.append(sum(S1))
+		reward = env.perform(action, i, final_iteration=True)
 		Reward.append(reward[2])
-	action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
-	reward = env.perform(action, i, final_iteration=True)
-	Reward.append(reward[2])
-	plt.plot(range(len(true_I)),true_I)
-	# plt.plot(range(len(belief_I)),belief_I)
-	print(sum(Reward))
+		plt.plot(range(len(true_I)),true_I)
+		# plt.plot(range(len(belief_I)),belief_I)
+		total_rew.append(sum(Reward))
+
+	print(f'Reward Average: {mean(total_rew)}, ')

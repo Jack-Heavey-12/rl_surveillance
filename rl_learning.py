@@ -202,8 +202,7 @@ class DQN(FQI):
 			next_action = self.greedy_action_GCN(next_state)
 			prediction = self.Q_GCN(state, action, netid=netid)
 			target = reward + discount * self.Q_GCN(next_state, next_action, netid= netid)
-			print(f'Shapes: {prediction.shape()}, {target.shape}')
-			loss = self.loss_fn(prediction, target)
+			loss = (prediction - target) ** 2 #self.loss_fn(prediction, target)
 			loss_list.append(loss)
 		total_loss = sum(loss_list)
 		return loss
@@ -308,11 +307,11 @@ if __name__ == '__main__':
 	
 	discount=1
 	First_time=True
-	graph_index=1
+	graph_index=2
 	g, graph_name=get_graph(graph_index)
 	if First_time:
 		model=DQN(graph=g)
-		cumulative_reward_list,true_cumulative_reward_list=model.fit_GCN(num_iterations=300, num_epochs=30)
+		cumulative_reward_list,true_cumulative_reward_list=model.fit_GCN(num_iterations=50, num_epochs=30)
 		with open('Graph={}.pickle'.format(graph_name), 'wb') as f:
 			pickle.dump([model,true_cumulative_reward_list], f)
 	else:

@@ -167,7 +167,7 @@ class EpidemicEnv(object):
 if __name__ == '__main__':
 	print('Here goes nothing')
 	Graph_List = ['test_graph','Hospital','India','Exhibition','Flu','irvine','Escorts','Epinions']
-	Graph_index = 1
+	Graph_index = 2
 	Graph_name = Graph_List[Graph_index]
 	path = 'graph_data/' + Graph_name + '.txt'
 	G = nx.read_edgelist(path, nodetype=int)
