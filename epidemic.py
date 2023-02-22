@@ -34,7 +34,7 @@ class EpidemicEnv(object):
 		#time steps
 		self.T = 100
 		#Not sure what this variable does? I think it's for the curriculum learning?
-		self.Temperature = 1
+		self.Temperature = 0
 		self.belief_regressor=ExtraTreesRegressor()
 		#dictionary of infected individuals at a given time - each dictionary value should be a set.
 		self.inf_t = {}
@@ -46,6 +46,8 @@ class EpidemicEnv(object):
 		self.iso = set()
 		self.iso_time = {}
 		self.inv_iso = np.ones(self.n)
+
+		self.terminal_reward = 0
 
 	#For resetting the environment for multiple trials
 	def reset(self):
@@ -72,7 +74,10 @@ class EpidemicEnv(object):
 			
 
 
-		#Can do some curriculum learning here.
+		#Reward Calculation
+		total_reward = -np.sum(self.true_state)
+		self.terminal_reward += total_reward
+		'''
 		if not final_iteration:
 			hidden_reward = -np.sum(self.true_state)
 			#visible_reward = 0
@@ -86,6 +91,7 @@ class EpidemicEnv(object):
 			for i in list(self.inf_t.keys()):
 				total_reward += len(self.inf_t[i])
 			total_reward = -total_reward
+		'''
 
 
 		#Saving the infected set for calculation later
@@ -187,12 +193,12 @@ if __name__ == '__main__':
 			action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
 			reward = env.perform(action, i, final_iteration=False)
 			#true_I.append(sum(S1))
-			Reward.append(reward[2])
+			#Reward.append(reward[2])
 		action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
 		reward = env.perform(action, i, final_iteration=True)
-		Reward.append(reward[2])
+		#Reward.append(env.terminal_reward)
 		plt.plot(range(len(true_I)),true_I)
 		# plt.plot(range(len(belief_I)),belief_I)
-		total_rew.append(sum(Reward))
+		total_rew.append(env.terminal_reward)
 
-	print(f'Reward Average: {mean(total_rew)}, ')
+	print(f'Reward Average: {mean(total_rew)}, Reward Standard Deviation: {np.std(total_rew)}')

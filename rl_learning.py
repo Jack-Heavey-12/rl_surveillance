@@ -214,7 +214,7 @@ class DQN(FQI):
 			cumulative_reward_list = []
 			true_cumulative_reward_list = [] 
 			true_RL_reward=[]
-			self.simulator.Temperature=max((1-(epoch/20)),0) 
+			self.simulator.Temperature=max(0) 
 			for episode in range(num_iterations):
 				S, A, R, cumulative_reward = self.run_episode_GCN(eps=eps, discount=discount)
 				new_memory = []
@@ -323,6 +323,6 @@ if __name__ == '__main__':
 	for i in range(300):
 		model.simulator.Temperature=0
 		S, A, R, cumulative_reward = model.run_episode_GCN(eps=0, discount=discount)
-		cumulative_rewards.append(cumulative_reward)
+		cumulative_rewards.append(np.sum(R))
 	print('optimal reward:', np.mean(cumulative_rewards))
 	print('optimal reward std:', np.std(cumulative_rewards))
