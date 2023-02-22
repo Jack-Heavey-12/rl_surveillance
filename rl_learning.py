@@ -307,7 +307,7 @@ if __name__ == '__main__':
 	
 	discount=1
 	First_time=True
-	graph_index=2
+	graph_index=5
 	g, graph_name=get_graph(graph_index)
 	if First_time:
 		model=DQN(graph=g)
