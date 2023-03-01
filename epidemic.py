@@ -9,7 +9,7 @@ from sklearn.ensemble import ExtraTreesRegressor
 
 
 class EpidemicEnv(object):
-	def __init__(self, graph, budget_c = None, initial_i = 0.1, infect_prob=0.1, cure_prob=0.05, iso_length = 10, tau = 1, intermediate_sample = .1):
+	def __init__(self, graph, budget_c = None, initial_i = 0.1, infect_prob=0.01, cure_prob=0.01, iso_length = 10, tau = 1, intermediate_sample = .1):
 		self.graph = graph
 		self.n = len(graph)
 		if not budget_c:
@@ -61,6 +61,8 @@ class EpidemicEnv(object):
 		self.iso = set()
 		self.iso_time = {}
 		self.inv_iso = np.ones(self.n)
+
+		self.terminal_reward = 0
 
 		
 
@@ -200,5 +202,5 @@ if __name__ == '__main__':
 		plt.plot(range(len(true_I)),true_I)
 		# plt.plot(range(len(belief_I)),belief_I)
 		total_rew.append(env.terminal_reward)
-
-	print(f'Reward Average: {mean(total_rew)}, Reward Standard Deviation: {np.std(total_rew)}')
+	print('=== Random Node Selection ===')
+	print(f'Reward Average: {np.mean(total_rew)}, Reward Standard Deviation: {np.std(total_rew)}')

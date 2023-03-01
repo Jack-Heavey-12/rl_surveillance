@@ -1,0 +1,62 @@
+from epidemic import EpidemicEnv
+
+import numpy as np
+import random
+import networkx as nx
+
+
+if __name__ == '__main__':
+	print('Here goes nothing')
+	Graph_List = ['test_graph','Hospital','India','Exhibition','Flu','irvine','Escorts','Epinions']
+	Graph_index = 2
+	Graph_name = Graph_List[Graph_index]
+	path = 'graph_data/' + Graph_name + '.txt'
+	G = nx.read_edgelist(path, nodetype=int)
+	mapping = dict(zip(G.nodes(),range(len(G))))
+	g = nx.relabel_nodes(G,mapping)
+	env = EpidemicEnv(graph=g)
+	
+	total_rew = []
+	for _ in range(50):
+		env.reset()
+		true_I = []
+		belief_I = []
+		#Reward = []
+		future_tests = set()
+		for i in range(100):
+			if not list(future_tests): 
+				action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
+	
+			else if len(list(future_tests)) >= k:	
+				#Contact Tracing List
+				action = random.sample(list(future_tests), env.budget)
+			else:
+				num = env.budget - len(list(future_tests)) 
+				action = random.sample(env.all_nodes,num) + list(future_tests)
+
+			reward = env.perform(action, i, final_iteration=False)
+
+			positive_tests = [x for ind, x in enumerate(reward[1]) if ind == 1]
+			
+			future_tests = set()
+			for i in positive_tests:
+				future_tests.update(g.neighbors(i))
+			
+
+
+		if not list(future_tests): 
+			action = random.sample(env.all_nodes,min(len(env.all_nodes),env.budget))
+	
+		else if len(list(future_tests)) >= k:	
+			#Contact Tracing List
+			action = random.sample(list(future_tests), env.budget)
+		else:
+			num = env.budget - len(list(future_tests)) 
+			action = random.sample(env.all_nodes,num) + list(future_tests)
+		reward = env.perform(action, i, final_iteration=True)
+		#Reward.append(env.terminal_reward)
+		plt.plot(range(len(true_I)),true_I)
+		# plt.plot(range(len(belief_I)),belief_I)
+		total_rew.append(env.terminal_reward)
+	print('=== Contact Tracing ===')
+	print(f'Reward Average: {mean(total_rew)}, Reward Standard Deviation: {np.std(total_rew)}')
