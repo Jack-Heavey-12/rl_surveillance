@@ -1,0 +1,39 @@
+2023-02-28 13:59:43.129052: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-02-28 13:59:45.665794: W tensorflow/compiler/xla/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libnvinfer.so.7'; dlerror: libnvinfer.so.7: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /apps/software/standard/core/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0:/apps/software/standard/core/gcc/9.2.0/lib64:/apps/software/standard/core/gcc/9.2.0/lib:/opt/slurm/current/lib:/share/rci_apps/common/lib64
+2023-02-28 13:59:45.665982: W tensorflow/compiler/xla/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libnvinfer_plugin.so.7'; dlerror: libnvinfer_plugin.so.7: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /apps/software/standard/core/gcc/9.2.0/lib/gcc/x86_64-pc-linux-gnu/9.2.0:/apps/software/standard/core/gcc/9.2.0/lib64:/apps/software/standard/core/gcc/9.2.0/lib:/opt/slurm/current/lib:/share/rci_apps/common/lib64
+2023-02-28 13:59:45.665997: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Cannot dlopen some TensorRT libraries. If you would like to use Nvidia GPU with TensorRT, please make sure the missing libraries mentioned above are installed properly.
+Here goes nothing
+202
+Epoch 0, MSE loss: 20442.46099609375, average reward: -336.40748754879957, true RL reward: -9934.7, true reward: -9934.7
+Epoch 1, MSE loss: 16339.69568359375, average reward: -324.1775627609073, true RL reward: -9719.02, true reward: -9719.02
+Epoch 2, MSE loss: 11718.78271484375, average reward: -330.5280309654491, true RL reward: -9805.74, true reward: -9805.74
+Epoch 3, MSE loss: 8012.19353515625, average reward: -321.3618758707539, true RL reward: -9936.64, true reward: -9936.64
+Epoch 4, MSE loss: 5732.901225585938, average reward: -330.18882200303995, true RL reward: -9859.18, true reward: -9859.18
+Epoch 5, MSE loss: 3632.2122778320313, average reward: -325.13457563994604, true RL reward: -9952.86, true reward: -9952.86
+Epoch 6, MSE loss: 2684.5341333007814, average reward: -323.96645407502007, true RL reward: -9693.6, true reward: -9693.6
+Epoch 7, MSE loss: 1732.8818762207031, average reward: -328.5396639250841, true RL reward: -9730.92, true reward: -9730.92
+Epoch 8, MSE loss: 1148.3333708953858, average reward: -322.242966159118, true RL reward: -9873.74, true reward: -9873.74
+Epoch 9, MSE loss: 684.7626676940918, average reward: -325.4430861385749, true RL reward: -9791.82, true reward: -9791.82
+Epoch 10, MSE loss: 435.3293808376789, average reward: -323.62565006136833, true RL reward: -9869.98, true reward: -9869.98
+Epoch 11, MSE loss: 260.53739059567454, average reward: -334.33700088285724, true RL reward: -9784.6, true reward: -9784.6
+Epoch 12, MSE loss: 244.22695857167244, average reward: -324.9816560819891, true RL reward: -9958.6, true reward: -9958.6
+Epoch 13, MSE loss: 134.9529488658905, average reward: -317.26040069064163, true RL reward: -9770.66, true reward: -9770.66
+Epoch 14, MSE loss: 113.87594269454479, average reward: -333.9536863931875, true RL reward: -9860.82, true reward: -9860.82
+Epoch 15, MSE loss: 61.185235517323015, average reward: -317.43703815969957, true RL reward: -9852.38, true reward: -9852.38
+Epoch 16, MSE loss: 55.70078105121851, average reward: -328.45099634859173, true RL reward: -9735.1, true reward: -9735.1
+Epoch 17, MSE loss: 53.29803776860237, average reward: -335.36798465560213, true RL reward: -9855.96, true reward: -9855.96
+Epoch 18, MSE loss: 38.72331213980913, average reward: -328.2441890339806, true RL reward: -9852.52, true reward: -9852.52
+Epoch 19, MSE loss: 58.05581980973482, average reward: -327.49703729799904, true RL reward: -9774.28, true reward: -9774.28
+Epoch 20, MSE loss: 50.89982570886612, average reward: -334.26882132345713, true RL reward: -9815.34, true reward: -9815.34
+Epoch 21, MSE loss: 55.87800035387278, average reward: -320.86326717220936, true RL reward: -9707.42, true reward: -9707.42
+Epoch 22, MSE loss: 46.743728894293305, average reward: -333.00149288887764, true RL reward: -9664.44, true reward: -9664.44
+Epoch 23, MSE loss: 37.44766601711512, average reward: -315.80032672340093, true RL reward: -9684.06, true reward: -9684.06
+Epoch 24, MSE loss: 61.944370749294755, average reward: -333.65935860656623, true RL reward: -9466.84, true reward: -9466.84
+Epoch 25, MSE loss: 71.71578453838825, average reward: -322.47198497574124, true RL reward: -9881.32, true reward: -9881.32
+Epoch 26, MSE loss: 54.53506105124951, average reward: -333.4683820597014, true RL reward: -9758.54, true reward: -9758.54
+Epoch 27, MSE loss: 47.51315917164087, average reward: -329.5870646070751, true RL reward: -9780.94, true reward: -9780.94
+Epoch 28, MSE loss: 42.253512496352194, average reward: -328.46251639389845, true RL reward: -9872.72, true reward: -9872.72
+Epoch 29, MSE loss: 36.79658222138882, average reward: -329.4142722088886, true RL reward: -9543.06, true reward: -9543.06
+optimal reward: -9724.07
+optimal reward std: 770.7100482239306
