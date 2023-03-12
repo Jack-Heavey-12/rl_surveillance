@@ -50,12 +50,21 @@ class EpidemicEnv(object):
 		self.terminal_reward = 0
 
 	#For resetting the environment for multiple trials
-	def reset(self):
+	def reset(self, samples=False, q=1):
 		self.all_nodes = list(range(self.n))
 		self.true_state = np.zeros(self.n)
 		self.true_state[random.sample(self.all_nodes, int(self.n*self.Initial_I))] = 1
 		self.belief_state = self.Initial_I * np.ones(self.n)
-		self.A = nx.to_numpy_matrix(self.graph)
+		if not samples:
+			self.A = nx.to_numpy_matrix(self.graph)
+		else:
+			n_graph = nx.Graph()
+			n_graph.add_nodes_from(list(self.graph.nodes()))
+
+			for i in list(self.graph.edges()):
+				if random.uniform(0,1) <= q:
+					n_graph.add_edge(i)
+			self.A = nx.to_numpy_matrix(n_graph)
 
 		self.inf_t = {}
 		self.iso = set()
